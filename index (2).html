@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oscar — Roadmap Trader Cuantitativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080a0e;--coal:#0f1318;--surface:#141920;--border:#1e2630;
+  --muted:#2a3442;--dim:#4a6080;--mid:#8aa0b8;--text:#c8dae8;--white:#e8f2fa;
+  --gold:#c9a84c;--gold-bright:#f0c84a;--gold-bg:rgba(201,168,76,0.12);
+  --blue:#5b9cf6;--green:#2eb87a;--green-bright:#4ade96;
+  --red:#e05252;--amber:#f4a261;--purple:#9b6dff;--teal:#2ec4b6;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(58,123,213,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(58,123,213,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* HEADER */
+header{border-bottom:1px solid var(--border);background:var(--coal);position:sticky;top:0;z-index:100}
+.hdr-inner{padding:20px 24px 0;max-width:1080px;margin:0 auto}
+.hdr-tag{font-size:9px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.hdr-tag::before{content:'';display:inline-block;width:20px;height:1px;background:var(--gold)}
+.hdr-top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;padding-bottom:16px}
+h1{font-family:'Syne',sans-serif;font-size:clamp(20px,4vw,34px);font-weight:800;line-height:1;letter-spacing:-0.02em;color:var(--white)}
+h1 em{color:var(--gold-bright);font-style:italic;font-family:'Fraunces',serif;font-weight:300}
+.hdr-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--surface);border:1px solid var(--border);padding:4px 12px;font-size:10px;letter-spacing:1px;color:var(--mid);border-radius:3px}
+.chip strong{color:var(--gold)}
+.nav-bar{display:flex;overflow-x:auto;border-top:1px solid var(--border);margin-top:4px}
+.nav-btn{background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;padding:10px 16px;margin-bottom:-1px;color:var(--dim);transition:color 0.2s;white-space:nowrap}
+.nav-btn:hover{color:var(--mid)}
+.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* TABS */
+.tab-content{display:none;padding:36px 0 80px}
+.tab-content.active{display:block}
+.section-label{font-size:9px;letter-spacing:4px;color:var(--dim);text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+hr.sep{border:none;border-top:1px solid var(--border);margin:32px 0}
+
+/* CARDS */
+.card{background:var(--coal);border:1px solid var(--border);padding:18px 22px}
+.card-sm{background:var(--coal);border:1px solid var(--border);padding:14px 18px}
+
+/* IO BAR */
+.io-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;padding:14px 18px;background:var(--coal);border:1px solid var(--border);align-items:center}
+.io-btn{padding:7px 14px;border:1px solid var(--border);background:var(--surface);color:var(--mid);cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;transition:all 0.2s;border-radius:3px}
+.io-btn:hover{border-color:var(--gold);color:var(--gold)}
+.io-btn.danger:hover{border-color:var(--red);color:var(--red)}
+.last-saved{font-size:10px;color:var(--dim);display:flex;align-items:center;gap:6px;margin-left:auto}
+.save-dot{width:6px;height:6px;border-radius:50%;background:var(--green-bright);flex-shrink:0}
+
+/* START DATE */
+.start-wrap{background:var(--coal);border:1px solid var(--border);padding:14px 18px;margin-bottom:22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.start-label{font-size:9px;letter-spacing:3px;color:var(--dim);text-transform:uppercase}
+.start-input{background:var(--surface);border:1px solid var(--border);color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:6px 10px;cursor:pointer;border-radius:3px}
+.start-input:focus{outline:none;border-color:var(--gold)}
+.month-badge{font-size:12px;color:var(--gold);padding:6px 14px;border:1px solid rgba(201,168,76,0.3);background:rgba(201,168,76,0.08);border-radius:3px}
+
+/* PHASE */
+.phase-grid{display:flex;gap:2px;margin-bottom:26px}
+.phase-btn{flex:1;padding:14px 10px;background:var(--coal);border:1px solid var(--border);cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;transition:all 0.2s;color:var(--dim);text-align:center}
+.phase-btn:first-child{border-radius:6px 0 0 6px}
+.phase-btn:last-child{border-radius:0 6px 6px 0}
+.phase-btn.active{background:var(--surface)}
+.phase-num{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:4px}
+.phase-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:36px}
+@media(max-width:600px){.phase-detail-grid,.py-grid{grid-template-columns:1fr}.phase-grid{flex-direction:column}}
+.skill-pill{display:inline-block;padding:3px 10px;font-size:10px;margin:2px;border-radius:3px;border:1px solid}
+.milestone-row{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.m-month{flex-shrink:0;width:38px;height:38px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;border:1px solid;font-family:'IBM Plex Mono',monospace}
+.tl-bars{display:flex;gap:2px;margin-bottom:8px}
+.tl-bar{border:1px solid;padding:8px 10px;font-size:9px;border-radius:4px}
+
+/* METRICS */
+.metric-row{background:var(--coal);border:1px solid var(--border);padding:16px 20px;margin-bottom:10px}
+.metric-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.metric-area-badge{font-size:9px;letter-spacing:2px;margin-right:8px}
+.metric-val{font-family:'Syne',sans-serif;font-size:17px;font-weight:700}
+.metric-track{height:4px;background:var(--muted);margin-bottom:6px;border-radius:2px;position:relative;overflow:visible}
+.metric-fill{height:100%;border-radius:2px;transition:width 0.3s,background 0.3s}
+.warn-line{position:absolute;top:-4px;bottom:-4px;width:2px;background:rgba(201,168,76,0.5);border-radius:1px}
+.metric-ticks{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:6px}
+.alerts-box{background:rgba(224,82,82,0.07);border:1px solid rgba(224,82,82,0.22);padding:14px 18px;margin-bottom:18px}
+.ok-box{background:rgba(46,184,122,0.07);border:1px solid rgba(46,184,122,0.2);padding:12px 16px;margin-bottom:18px;font-size:11px;color:var(--green-bright)}
+.alert-item{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid rgba(224,82,82,0.08);font-size:11px;color:var(--mid)}
+.alert-item:last-child{border-bottom:none}
+.log-entry{background:var(--coal);border:1px solid var(--border);padding:12px 16px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.log-week{font-size:10px;color:var(--gold);letter-spacing:2px;margin-bottom:3px}
+.log-summary{font-size:11px;color:var(--dim)}
+.log-status{font-size:10px;padding:2px 8px;border-radius:3px}
+
+/* READING */
+.level-tabs{display:flex;gap:4px;overflow-x:auto;margin-bottom:26px;padding-bottom:2px}
+.level-btn{flex-shrink:0;padding:10px 12px;background:var(--coal);border:1px solid var(--border);border-radius:6px;color:var(--dim);cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;transition:all 0.2s;text-align:center}
+.level-num{font-weight:800;font-size:15px;margin-bottom:3px}
+.level-header{border-left:4px solid;padding-left:16px;margin-bottom:22px}
+.level-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:5px}
+.level-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--white);margin-bottom:3px}
+.level-sub{font-size:13px;color:var(--mid);font-style:italic;margin-bottom:10px}
+.level-why{font-size:12px;color:var(--dim);line-height:1.7;max-width:620px}
+.book-card{background:var(--coal);border:1px solid var(--border);padding:14px 18px;margin-bottom:10px;transition:border-color 0.2s}
+.book-card.done{border-color:rgba(201,168,76,0.45)}
+.book-inner{display:flex;gap:12px;align-items:flex-start}
+.book-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px}
+.book-author{font-size:12px;color:var(--dim);font-style:italic;margin-bottom:7px}
+.book-note{font-size:12px;color:var(--mid);line-height:1.65}
+.book-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:5px;align-items:center}
+.book-tag{font-size:9px;padding:2px 8px;border-radius:10px;font-family:'IBM Plex Mono',monospace}
+.book-phase{font-size:9px;padding:2px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--dim);font-family:'IBM Plex Mono',monospace}
+.check-btn{flex-shrink:0;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--muted);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:transparent;transition:all 0.2s}
+.check-btn.done{background:var(--gold);border-color:var(--gold);color:#000}
+.progress-wrap{background:var(--muted);height:3px;border-radius:2px;margin:0 0 22px;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold);transition:width 0.4s}
+
+/* PYTHON */
+.py-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.py-card{background:var(--coal);border:1px solid var(--border);padding:18px 20px;transition:all 0.2s}
+.py-card.cur{background:var(--surface)}
+.py-card.past{opacity:0.55}
+.py-card.fut{opacity:0.3}
+.py-range{font-size:9px;letter-spacing:2px;margin-bottom:6px}
+.py-title{font-family:'Syne',sans-serif;font-weight:700;color:var(--white);font-size:14px;margin-bottom:10px}
+.py-libs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.lib-tag{padding:2px 8px;font-size:10px;border-radius:3px;border:1px solid;font-family:'IBM Plex Mono',monospace}
+.py-goal{font-size:12px;color:var(--mid);line-height:1.65}
+.slider-wrap{background:var(--coal);border:1px solid var(--border);padding:14px 18px;margin-bottom:22px}
+.slider-label{font-size:9px;letter-spacing:3px;color:var(--dim);margin-bottom:8px;text-transform:uppercase}
+input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;margin-bottom:4px}
+.slider-ticks{display:flex;justify-content:space-between;font-size:9px;color:var(--muted)}
+.warn-box{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);padding:14px 18px;display:flex;gap:12px;align-items:flex-start}
+.warn-icon{color:var(--gold);font-size:18px;flex-shrink:0}
+.warn-title{color:var(--gold);font-size:11px;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+.warn-body{font-size:12px;color:var(--dim);line-height:1.65}
+
+/* TIER */
+.tier-row{display:grid;grid-template-columns:62px 1fr;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:8px}
+.tier-label-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px}
+.tier-letter{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;line-height:1}
+.tier-tagline{font-size:0.44rem;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-top:3px}
+.tier-cards{background:var(--surface);display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px;align-items:center}
+.tool-card{display:flex;flex-direction:column;align-items:center;gap:4px}
+.tool-icon{width:52px;height:52px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;border:1px solid rgba(255,255,255,0.07);text-align:center;line-height:1.2;padding:4px;position:relative;overflow:hidden}
+.tool-sub{font-size:9px;letter-spacing:0.8px;text-transform:uppercase;color:var(--dim);text-align:center;max-width:58px;line-height:1.3}
+.tier-note{font-size:10px;color:var(--muted);padding-left:70px;margin:3px 0 12px;line-height:1.5}
+.locked-row{opacity:0.35}
+.lock-overlay{position:absolute;inset:0;background:rgba(8,10,14,0.72);display:grid;place-items:center;font-size:1.1rem}
+.tier-divider{font-size:9px;letter-spacing:3px;color:var(--muted);border-top:1px solid var(--border);padding-top:14px;margin:18px 0 8px;text-transform:uppercase}
+
+/* LAWS */
+.law-card{background:var(--coal);border:1px solid var(--border);padding:22px 26px;margin-bottom:10px;position:relative;overflow:hidden}
+.law-bg-num{position:absolute;top:-10px;right:14px;font-family:'Syne',sans-serif;font-size:76px;font-weight:800;opacity:0.04;color:var(--gold);line-height:1;pointer-events:none}
+.law-num-tag{font-size:9px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:7px}
+.law-title{font-family:'Syne',sans-serif;font-weight:700;color:var(--white);font-size:16px;margin-bottom:9px}
+.law-body{font-size:12px;color:var(--mid);line-height:1.7}
+.principles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:18px}
+.principle-card{border:1px solid var(--border);padding:14px 16px;background:var(--coal)}
+.p-icon{font-size:18px;margin-bottom:7px}
+.p-title{font-size:12px;color:var(--white);margin-bottom:3px;font-family:'Syne',sans-serif;font-weight:700}
+.p-body{font-size:11px;color:var(--dim);line-height:1.5}
+
+footer{border-top:1px solid var(--border);padding:16px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;background:var(--coal);position:relative;z-index:1}
+.footer-mark{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-inner">
+    <div class="hdr-tag">OSCAR · COLOMBIA · SISTEMA DE DESARROLLO TRADER 2026–2031</div>
+    <div class="hdr-top">
+      <h1>De <em>Contador</em> a Trader Cuantitativo</h1>
+      <div class="hdr-chips">
+        <div class="chip">Fase: <strong id="chip-fase">1 — Año de Base</strong></div>
+        <div class="chip">Mes: <strong id="chip-mes">—</strong></div>
+        <div class="chip">Libros: <strong id="chip-libros">0 / 27</strong></div>
+      </div>
+    </div>
+    <nav class="nav-bar">
+      <button class="nav-btn active" onclick="setTab('roadmap',this)">HOJA DE RUTA</button>
+      <button class="nav-btn" onclick="setTab('metricas',this)">MÉTRICAS</button>
+      <button class="nav-btn" onclick="setTab('lectura',this)">BIBLIOGRAFÍA</button>
+      <button class="nav-btn" onclick="setTab('python',this)">CURRÍCULO PYTHON</button>
+      <button class="nav-btn" onclick="setTab('tools',this)">TIER LIST</button>
+      <button class="nav-btn" onclick="setTab('leyes',this)">LAS 5 LEYES</button>
+    </nav>
+  </div>
+</header>
+
+<!-- TAB: HOJA DE RUTA -->
+<div class="tab-content active" id="tab-roadmap">
+<div class="wrap">
+  <div class="io-bar" style="margin-top:36px">
+    <button class="io-btn" onclick="exportData()">⬇ Exportar progreso (.json)</button>
+    <button class="io-btn" onclick="document.getElementById('file-import').click()">⬆ Importar progreso</button>
+    <input type="file" id="file-import" accept=".json" style="display:none" onchange="importData(event)">
+    <button class="io-btn danger" onclick="resetAll()">✕ Resetear todo</button>
+    <div class="last-saved"><span class="save-dot"></span><span id="last-saved-txt">Listo</span></div>
+  </div>
+
+  <div class="start-wrap">
+    <div class="start-label">Fecha de inicio del roadmap</div>
+    <input type="date" class="start-input" id="start-date" onchange="onStartDate()">
+    <div class="month-badge" id="computed-month">→ Configura tu fecha de inicio</div>
+  </div>
+
+  <div class="section-label">01 — FASES DEL SISTEMA</div>
+
+  <div class="phase-grid">
+    <button class="phase-btn active" id="pbtn-0" onclick="setPhase(0)">
+      <div class="phase-num" style="color:var(--gold)">FASE 1</div>
+      <div>Año de Base</div>
+      <div style="font-size:9px;opacity:0.6;margin-top:3px">Meses 1–12</div>
+    </button>
+    <button class="phase-btn" id="pbtn-1" onclick="setPhase(1)">
+      <div class="phase-num" style="color:var(--blue)">FASE 2</div>
+      <div>Trading Algorítmico</div>
+      <div style="font-size:9px;opacity:0.6;margin-top:3px">Meses 12–30</div>
+    </button>
+    <button class="phase-btn" id="pbtn-2" onclick="setPhase(2)">
+      <div class="phase-num" style="color:var(--purple)">FASE 3</div>
+      <div>Trader Cuantitativo</div>
+      <div style="font-size:9px;opacity:0.6;margin-top:3px">Meses 30–60</div>
+    </button>
+  </div>
+
+  <div id="phase-detail"></div>
+
+  <hr class="sep">
+  <div class="section-label">02 — TIMELINE 60 MESES</div>
+  <div class="tl-bars">
+    <div class="tl-bar" style="flex:12;border-color:rgba(201,168,76,0.4);color:var(--gold)">FASE 1 · M1–12</div>
+    <div class="tl-bar" style="flex:18;border-color:rgba(91,156,246,0.4);color:var(--blue)">FASE 2 · M12–30</div>
+    <div class="tl-bar" style="flex:30;border-color:rgba(155,109,255,0.4);color:var(--purple)">FASE 3 · M30–60</div>
+  </div>
+  <div class="card-sm" style="margin-top:8px">
+    <div style="font-size:9px;color:var(--dim);letter-spacing:2px;margin-bottom:6px">CRITERIO DE AVANCE</div>
+    <div style="font-size:12px;color:var(--mid);line-height:1.7">La Fase 2 se desbloquea por <span style="color:var(--gold)">métricas</span>, no por fecha — win rate, R-promedio y disciplina de journal deben alcanzar los umbrales definidos. Ir a Fase 2 antes de tiempo es el error más costoso del roadmap.</div>
+  </div>
+</div>
+</div>
+
+<!-- TAB: MÉTRICAS -->
+<div class="tab-content" id="tab-metricas">
+<div class="wrap">
+  <div class="section-label" style="margin-top:36px">03 — TRACKER DE MÉTRICAS SEMANALES</div>
+  <div style="color:var(--dim);font-size:11px;margin-bottom:20px">Registra tu semana cada domingo. El sistema te alerta si estás por debajo del umbral mínimo. Todo se guarda automáticamente.</div>
+  <div id="alerts-area"></div>
+  <div id="metrics-grid"></div>
+  <hr class="sep">
+  <div class="section-label">HISTORIAL DE SEMANAS</div>
+  <button class="io-btn" onclick="logWeek()" style="border-color:rgba(201,168,76,0.4);color:var(--gold);margin-bottom:16px">+ Guardar semana actual</button>
+  <div id="week-log-list"></div>
+</div>
+</div>
+
+<!-- TAB: BIBLIOGRAFÍA -->
+<div class="tab-content" id="tab-lectura">
+<div class="wrap">
+  <div class="section-label" style="margin-top:36px">04 — BIBLIOGRAFÍA POR NIVELES</div>
+  <div style="color:var(--dim);font-size:11px;margin-bottom:14px">Prelación: ORO primero, luego Trading por fases. Marca cada libro al completarlo — el progreso se guarda.</div>
+  <div class="progress-wrap"><div class="progress-fill" id="books-bar" style="width:0%"></div></div>
+  <div class="level-tabs" id="level-tabs"></div>
+  <div id="level-content"></div>
+</div>
+</div>
+
+<!-- TAB: PYTHON -->
+<div class="tab-content" id="tab-python">
+<div class="wrap">
+  <div class="section-label" style="margin-top:36px">05 — CURRÍCULO PYTHON MES A MES</div>
+  <div style="color:var(--dim);font-size:11px;margin-bottom:20px">SENA ADS es el vehículo principal. Python responde preguntas reales sobre tus trades y pares.</div>
+  <div class="slider-wrap">
+    <div class="slider-label">Mes actual: <span style="color:var(--gold)" id="py-month-lbl">MES 3</span></div>
+    <input type="range" min="1" max="12" value="3" id="py-slider" oninput="setPyMonth(+this.value)">
+    <div class="slider-ticks"><span>M1</span><span>M3</span><span>M6</span><span>M9</span><span>M12</span></div>
+  </div>
+  <div class="py-grid" id="py-grid"></div>
+  <div class="warn-box">
+    <div class="warn-icon">⚠</div>
+    <div>
+      <div class="warn-title">Regla anti-sobrecarga</div>
+      <div class="warn-body">El currículo Python existe subordinado al demo trading y el journal. Si SENA ADS satura, el Python autónomo pausa. SENA ADS es el vehículo principal — este currículo es el complemento aplicado a finanzas.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- TAB: TIER LIST -->
+<div class="tab-content" id="tab-tools">
+<div class="wrap">
+  <div class="section-label" style="margin-top:36px">06 — TIER LIST DE HERRAMIENTAS</div>
+  <div style="color:var(--dim);font-size:11px;margin-bottom:24px">Fase 1 activa. Herramientas desbloqueadas por métricas, no por fecha.</div>
+  <div id="tier-list"></div>
+</div>
+</div>
+
+<!-- TAB: LEYES -->
+<div class="tab-content" id="tab-leyes">
+<div class="wrap">
+  <div class="section-label" style="margin-top:36px">07 — LAS 5 LEYES DEL SISTEMA</div>
+  <div style="color:var(--dim);font-size:11px;margin-bottom:24px">No son motivación. Son restricciones operativas irrompibles.</div>
+  <div id="laws-list"></div>
+  <hr class="sep">
+  <div class="section-label">PRINCIPIOS RECTORES</div>
+  <div class="principles-grid" id="principles-grid"></div>
+</div>
+</div>
+
+<footer>
+  <span class="footer-mark">OSCAR — TRADING SYSTEM v2.0</span>
+  <span class="footer-mark">XTB → IG → SAXO / IBKR</span>
+  <span class="footer-mark">SECUENCIAR · NO ACUMULAR · 2026–2031</span>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const PHASES=[
+  {id:1,label:'FASE 1',name:'Año de Base',range:'Meses 1–12',color:'#c9a84c',
+   tagline:'No de Brillo — de Infraestructura',
+   desc:'No se trata de ganar dinero todavía. Se trata de construir los sistemas mentales, técnicos y analíticos que harán posible ganar dinero después. El trader que salta esta fase pierde todo cuando llega el capital real.',
+   broker:'XTB xStation 5 (Demo)',capital:'$0',
+   skills:['Demo trading diario','Journal riguroso (R-units)','Análisis técnico base','pandas + yfinance','matplotlib','Macro Forex','Psicología del trader','Gestión de riesgo'],
+   milestones:[{m:3,t:'50 operaciones demo documentadas',a:'TRADING'},{m:6,t:'Primer script Python de análisis de journal',a:'PYTHON'},{m:9,t:'Sistema de trading escrito con reglas claras',a:'TRADING'},{m:12,t:'Live consistente + Python aplicado a finanzas',a:'AMBOS'}]},
+  {id:2,label:'FASE 2',name:'Trading Algorítmico',range:'Meses 12–30',color:'#5b9cf6',
+   tagline:'De la intuición al sistema replicable',
+   desc:'Con disciplina demostrada en Fase 1, se introduce capital real pequeño y la transición a Python como herramienta operacional. Backtesting riguroso antes de ejecutar cualquier estrategia automática.',
+   broker:'IG Markets',capital:'$1,000–2,000',
+   skills:['Capital real pequeño','OANDA / Alpaca API','backtrader','vectorbt','Estrategias basadas en reglas','Risk management cuantitativo'],
+   milestones:[{m:15,t:'Bot funcional con API OANDA/Alpaca',a:'PYTHON'},{m:20,t:'Backtest documentado con métricas reales',a:'PYTHON'},{m:24,t:'Sistema algorítmico en live con capital real',a:'TRADING'},{m:30,t:'Portafolio de estrategias diversificadas',a:'AMBOS'}]},
+  {id:3,label:'FASE 3',name:'Trader Cuantitativo',range:'Meses 30–60',color:'#9b6dff',
+   tagline:'Operación institucional y modelos propios',
+   desc:'Operaciones sistemáticas con plataformas profesionales. Señales basadas en ML. QuantConnect como entorno principal de investigación cuantitativa.',
+   broker:'Saxo Bank · Interactive Brokers',capital:'$5,000+',
+   skills:['QuantConnect','ML en señales de trading','López de Prado','Gestión de portafolio','Live trading automatizado'],
+   milestones:[{m:36,t:'Primer modelo ML en producción',a:'PYTHON'},{m:42,t:'Cuenta en IBKR o Saxo Bank activa',a:'TRADING'},{m:48,t:'Competencia IQC / ROBOTRADER participada',a:'AMBOS'},{m:60,t:'Trader cuantitativo profesional operativo',a:'AMBOS'}]},
+];
+
+const METRICS=[
+  {id:'journal',label:'Días con journal completado',max:5,unit:'días',warn:4,critical:3,area:'TRADING',ac:'#c9a84c'},
+  {id:'rules',label:'% operaciones con reglas escritas previas',max:100,unit:'%',warn:80,critical:60,area:'TRADING',ac:'#c9a84c'},
+  {id:'python',label:'Sesiones de Python completadas',max:2,unit:'sesiones',warn:1,critical:0,area:'PYTHON',ac:'#5b9cf6'},
+  {id:'reading',label:'Horas de lectura técnica',max:3,unit:'horas',warn:2,critical:1,area:'FORMACIÓN',ac:'#f4a261'},
+  {id:'review',label:'Revisión semanal de proceso realizada',max:1,unit:'sí/no',warn:1,critical:0,area:'PROCESO',ac:'#2ec4b6'},
+  {id:'macro',label:'Análisis macro semanal completado',max:1,unit:'sí/no',warn:1,critical:0,area:'TRADING',ac:'#c9a84c'},
+  {id:'winrate',label:'Win rate semanal (%)',max:100,unit:'%',warn:45,critical:35,area:'TRADING',ac:'#c9a84c'},
+  {id:'rr',label:'R-promedio de la semana (×0.1R)',max:30,unit:'×0.1R',warn:10,critical:5,area:'RIESGO',ac:'#4ade96'},
+];
+
+const LEVELS=[
+  {id:'oro',num:'★',label:'PRIORIDAD ABSOLUTA',title:'Oro & Sistema Monetario',
+   sub:'Tu especialización activa — prioritaria en Fase 1',
+   color:'#c9a84c',accent:'#f0c84a',
+   why:'El oro es tu instrumento de estudio activo en XTB (XAU/USD). Esta bibliografía va primero porque ya lo estás operando en demo y cada libro conecta directamente con lo que analizas en TradingView.',
+   books:[
+    {t:'Guía para invertir en Oro y Plata',a:'Michael Maloney',phase:'Fase 1',tag:'Empieza aquí',note:'Punto de entrada en español. Fundamentos de metales preciosos. Nota: su apéndice de recursos web es de 2008 — casi todo está desactualizado. Quédate con el contenido del libro.'},
+    {t:'The New Case for Gold',a:'James Rickards',phase:'Fase 1',tag:'Alta prioridad',note:'El más citado en círculos de trading macro en 2026. Rickards sigue activo. Conecta directamente con las correlaciones DXY–oro que estudias.'},
+    {t:'Currency Wars',a:'James Rickards',phase:'Fase 1–2',tag:null,note:'Por qué China y Rusia acumulan oro sistemáticamente. Conectado a las correlaciones de tu plan de 4 semanas.'},
+    {t:'Hot Commodities',a:'Jim Rogers',phase:'Fase 1–2',tag:null,note:'Rogers fue socio de George Soros. El argumento para invertir en commodities como clase de activo — superciclos, oro, cobre, petróleo.'},
+    {t:'The Golden Constant',a:'Roy Jastram',phase:'Fase 2',tag:'Académico',note:'400 años de datos sobre el oro como reserva de valor. La referencia que todo analista serio cita. Denso pero definitivo.'},
+    {t:'Gold Mining Stocks: A Comprehensive Guide',a:'Adam Hamilton',phase:'Fase 2–3',tag:null,note:'Para analizar mineras: AISC, reservas, comparación de empresas. Relevante para Aris Mining, Newmont, Barrick.'},
+   ]},
+  {id:'psi',num:'I',label:'NIVEL I',title:'Fundamentos del Trader',
+   sub:'Psicología, disciplina y por qué la mayoría fracasa',
+   color:'#2a5f16',accent:'#7CB518',
+   why:'Antes de leer un gráfico, hay que leerte a ti mismo. El 90% fracasa no por estrategia, sino por falta de disciplina. Empezar aquí no es opcional.',
+   books:[
+    {t:'Trading in the Zone',a:'Mark Douglas',phase:'Fase 1',tag:'Entrada Nivel I',note:'El libro de psicología de trading más citado. Explica por qué tener razón en el análisis no basta — la disciplina ejecutora es lo que separa a quien sobrevive.'},
+    {t:'Reminiscences of a Stock Operator',a:'Edwin Lefèvre',phase:'Fase 1',tag:null,note:'Novela biográfica de 1923 que sigue siendo obligatoria. Las lecciones sobre ego, pérdidas y paciencia no han caducado.'},
+    {t:'Market Wizards',a:'Jack Schwager',phase:'Fase 1',tag:null,note:'Entrevistas a traders legendarios. No hay fórmula mágica — hay disciplina aplicada de formas distintas.'},
+   ]},
+  {id:'at',num:'II',label:'NIVEL II',title:'Análisis Técnico',
+   sub:'El idioma del precio — gráficos, patrones y estructura',
+   color:'#1A4D5C',accent:'#2E9CB8',
+   why:'Directamente aplicable a tu práctica diaria con EUR/USD, USD/JPY y XAU/USD. Sin este idioma, estás operando a ciegas sin importar cuánta macro sepas.',
+   books:[
+    {t:'Technical Analysis of the Financial Markets',a:'John J. Murphy',phase:'Fase 1',tag:'La biblia del AT',note:'Manual de consulta recurrente. Desde Teoría de Dow hasta patrones de cambio de tendencia.'},
+    {t:'Come Into My Trading Room',a:'Alexander Elder',phase:'Fase 1',tag:null,note:'Sistema de las 3M: Mente, Método, Manejo del dinero. Si falla uno, el trader está condenado.'},
+    {t:'Japanese Candlestick Charting Techniques',a:'Steve Nison',phase:'Fase 1',tag:null,note:'El libro que introdujo las velas japonesas a occidente. Manual de referencia para patrones en H4 y D1.'},
+    {t:'Technical Analysis Explained',a:'Martin Pring',phase:'Fase 1–2',tag:null,note:'Más profundo que Murphy en algunos aspectos. Complemento sólido una vez que tengas la base.'},
+   ]},
+  {id:'risk',num:'III',label:'NIVEL III',title:'Gestión de Riesgo y Sistemas',
+   sub:'Lo que separa a quien sobrevive 5 años',
+   color:'#5C3D1A',accent:'#C77F2E',
+   why:'La categoría que el 90% de principiantes ignora — y la razón por la que tu journal con R ya te pone adelante del promedio.',
+   books:[
+    {t:'Trade Your Way to Financial Freedom',a:'Van K. Tharp',phase:'Fase 1',tag:'Cambia el chip',note:'La referencia mundial sobre position sizing. Tharp demuestra con datos que el tamaño de la posición importa más que la estrategia de entrada.'},
+    {t:'The Disciplined Trader',a:'Mark Douglas',phase:'Fase 1',tag:null,note:'Anterior a Trading in the Zone. Más enfocado en construir la estructura mental antes de tocar el método.'},
+    {t:'The New Trading for a Living',a:'Alexander Elder',phase:'Fase 1–2',tag:null,note:'Versión 2014 de su clásico. Cubre análisis técnico, psicología y gestión del riesgo en un solo volumen.'},
+    {t:'The Art and Science of Technical Analysis',a:'Adam Grimes',phase:'Fase 1–2',tag:null,note:'AT basado en evidencia estadística, no en folklore. Relevante para tu transición hacia el pensamiento cuantitativo.'},
+   ]},
+  {id:'sis',num:'IV',label:'NIVEL IV',title:'Sistemas y Algo Básico',
+   sub:'El puente entre Fase 1 y Fase 2',
+   color:'#1e4a2a',accent:'#4ade96',
+   why:'No son para ahora. Son para cuando SENA ADS te dé las bases de Python y empieces a programar sistemas.',
+   books:[
+    {t:'Way of the Turtle',a:'Curtis Faith',phase:'Fase 2',tag:'Puente Fase 2',note:'El experimento de trading más famoso: ¿se puede entrenar un trader? Sí. Sólido antes de construir sistemas propios.'},
+    {t:'Building Winning Algorithmic Trading Systems',a:'Kevin Davey',phase:'Fase 2',tag:null,note:'Cómo construir, probar y operar un sistema desde cero. Metodología rigurosa, muy práctica.'},
+    {t:'Quantitative Trading',a:'Ernest Chan',phase:'Fase 2',tag:null,note:'El punto de entrada al quant trading independiente. Asequible para quien ya tiene Python básico.'},
+    {t:'Inside the Black Box',a:'Rishi Narang',phase:'Fase 2',tag:null,note:'Qué hay dentro de los hedge funds cuantitativos, explicado sin matemáticas. Mapa mental excelente para la Fase 3.'},
+   ]},
+  {id:'pylib',num:'V',label:'NIVEL V',title:'Python Aplicado a Finanzas',
+   sub:'Tu Fase 2–3 en código — para después de SENA ADS',
+   color:'#1e2a5c',accent:'#5b9cf6',
+   why:'El puente entre SENA ADS y tu trabajo cuantitativo. Ninguno es para ahora — son para cuando ya tengas fluidez en Python básico.',
+   books:[
+    {t:'Python for Algorithmic Trading',a:'Yves Hilpisch',phase:'Fase 2–3',tag:'Eje del Nivel V',note:'El libro más completo en Python aplicado a trading. pandas, NumPy, backtesting, APIs de broker.'},
+    {t:'Machine Learning for Algorithmic Trading',a:'Stefan Jansen',phase:'Fase 3',tag:null,note:'El puente entre ML y mercados financieros. Muy práctico, con código real en Python.'},
+    {t:'Advances in Financial Machine Learning',a:'Marcos López de Prado',phase:'Fase 3',tag:null,note:'La referencia académica del trading cuantitativo moderno. Necesitas Python sólido y base matemática.'},
+   ]},
+  {id:'quant',num:'VI–VII',label:'NIVEL VI–VII',title:'Quant Avanzado / Investigación',
+   sub:'Institucional. Matemáticas serias. Horizonte 4–5 años.',
+   color:'#3d1a5c',accent:'#9b6dff',
+   why:'El nivel final del roadmap. No los mires ahora — están aquí para que tengas visibilidad del horizonte completo.',
+   books:[
+    {t:'Active Portfolio Management',a:'Grinold & Kahn',phase:'Fase 3',tag:'Fase 3',note:'Gestión de portafolio cuantitativa a nivel institucional. El marco alfa/información que usan los hedge funds.'},
+    {t:'Options, Futures and Other Derivatives',a:'John Hull',phase:'Fase 3',tag:null,note:'La biblia universitaria de derivados. Para cuando llegues a opciones y futuros de manera sistemática.'},
+    {t:'Stochastic Calculus for Finance I & II',a:'Shreve',phase:'Fase 3',tag:null,note:'Las matemáticas del pricing de derivados. Nivel universitario avanzado.'},
+    {t:'Papers de SSRN / arXiv',a:'López de Prado et al.',phase:'Fase 3',tag:null,note:'Cuando los libros se vuelvan lentos. Investigación cuantitativa pura.'},
+   ]},
+];
+
+const PY_MONTHS=[
+  {range:'Mes 1–2',title:'Ver tus pares en código',libs:['pandas','yfinance','matplotlib'],goal:'Descargar datos de EUR/USD, graficarlos, calcular medias móviles. Ver en código lo que ves en xStation.',color:'#2a5f16',s:1,e:2},
+  {range:'Mes 3–4',title:'Analizar tus propios trades',libs:['pandas','matplotlib','numpy'],goal:'Importar tu journal como CSV. Calcular win rate, R promedio, racha máxima de pérdidas.',color:'#1A4D5C',s:3,e:4},
+  {range:'Mes 5–6',title:'Indicadores técnicos en código',libs:['pandas-ta','plotly'],goal:'Calcular RSI, MACD, Bollinger Bands desde cero y graficarlos interactivos. Entender la fórmula, no solo la línea.',color:'#5C3D1A',s:5,e:6},
+  {range:'Mes 7–8',title:'Primera estrategia backtesteable',libs:['backtrader','pandas'],goal:'Codificar una estrategia simple (MA crossover) y correrla contra datos históricos.',color:'#1e4a2a',s:7,e:8},
+  {range:'Mes 9–10',title:'Dashboard de trading personal',libs:['plotly','dash','pandas'],goal:'Tu propio panel: métricas del journal, equity curve, estadísticas de los pares. Tu Bloomberg personal.',color:'#1e2a5c',s:9,e:10},
+  {range:'Mes 11–12',title:'Optimización y prep Fase 2',libs:['vectorbt','scipy'],goal:'Optimizar parámetros de la estrategia. Preparar entorno para conectar con API de broker.',color:'#3d1a5c',s:11,e:12},
+];
+
+const TIERS=[
+  {tier:'S',tagline:'esencial',color:'#e63946',note:'La triada irremplazable de Fase 1. Sin estos tres activos en paralelo, todo lo demás es ruido.',
+   items:[{l:'xStation 5',s:'XTB Demo',bg:'#002060',fg:'#8dd4ff'},{l:'Diario R',s:'Google Sheets',bg:'#1f4a1f',fg:'#7dff7d'},{l:'SENA ADS',s:'Programación',bg:'#005599',fg:'#8dd4ff'}]},
+  {tier:'A',tagline:'alto valor',color:'#f4a261',note:'Refuerzan directamente los 3 pilares. TradingView como análisis visual; Francisca Serrano como lectura ancla de AT.',
+   items:[{l:'TradingView',s:'Análisis visual',bg:'#013f38',fg:'#2ec4b6'},{l:'Pandas/NumPy',s:'Python libs',bg:'#3c5a14',fg:'#a8e063'},{l:'Investing.com',s:'Calendario macro',bg:'#3b1f5e',fg:'#c77dff'},{l:'Francisca S.',s:'Lectura ancla',bg:'#5c3d1a',fg:'#f0c84a'}]},
+  {tier:'B',tagline:'útil',color:'#2ec4b6',note:'Contexto de mercado y soporte operativo. Colab y Sheets útiles para prototipar análisis antes de codificarlos en Python.',
+   items:[{l:'Valora Analitik',s:'Colombia macro',bg:'#3d2200',fg:'#ffb347'},{l:'Bloomberg Línea',s:'Latam noticias',bg:'#222',fg:'#ff6b1a'},{l:'Yahoo Finance',s:'yfinance datos',bg:'#3d008a',fg:'#c77dff'},{l:'Google Colab',s:'Python sandbox',bg:'#3d2800',fg:'#ffaa44'},{l:'Google Sheets',s:'Soporte journal',bg:'#006400',fg:'#90ee90'}]},
+  {tier:'C',tagline:'contexto',color:'#8ecae6',note:'U. Tokio: modo observador — asistir, no implementar. Primera en pausar si SENA ADS satura.',
+   items:[{l:'U. Tokyo',s:'IA/ML · obs.',bg:'#3d2000',fg:'#ffcc88'},{l:'Trii / BVC',s:'Acciones COL',bg:'#003d6b',fg:'#5ec8ff'},{l:'COT CFTC',s:'Concepto',bg:'#3d3200',fg:'#ffd166'},{l:'World Gold Council',s:'Datos oro',bg:'#4a3500',fg:'#f0c84a'}]},
+];
+
+const LOCKED_TOOLS=[{l:'IG Markets',s:'Fase 2 broker'},{l:'Interactive Brokers',s:'Fase 3'},{l:'Saxo Bank',s:'Fase 3'},{l:'QuantConnect',s:'Fase 3'},{l:'MT4 / MT5',s:'Fase 2–3'}];
+
+const LAWS=[
+  {n:'01',title:'El journal es el activo más valioso',body:'No existe trading sin registro. Cada trade sin documentar es un trade que no aprendiste. En 6 meses, tu journal será tu mejor estrategia.'},
+  {n:'02',title:'Python responde preguntas reales',body:'Cada script que escribas debe responder una pregunta específica sobre tus pares o tus trades. Nunca código por el código.'},
+  {n:'03',title:'No operar también es disciplina',body:'Si no hay setup claro, no se opera. El día que no hiciste nada puede ser el día de mayor disciplina. Regístralo igual.'},
+  {n:'04',title:'Secuencia > Velocidad',body:'Ir lento en el orden correcto llega más lejos que ir rápido en el orden equivocado. Fase 1 bien ejecutada vale más que saltar a Fase 3.'},
+  {n:'05',title:'El domingo es sagrado',body:'El descanso mental es recuperación activa del sistema nervioso del trader. Sin él, el deterioro cognitivo afecta todas las decisiones de riesgo.'},
+];
+
+const PRINCIPLES=[
+  {icon:'⏳',t:'Secuenciar, no acumular',d:'Un workstream a la vez. Profundidad sobre amplitud.'},
+  {icon:'📓',t:'Proceso sobre resultado',d:'El journal documenta decisiones, no solo P&L.'},
+  {icon:'📈',t:'Pensar en series',d:'Ningún trade importa. La distribución de 100 sí.'},
+  {icon:'🔍',t:'Macro → Micro',d:'Fed, BOJ, geopolítica → precio. Siempre conectar.'},
+  {icon:'🛡️',t:'Capital de riesgo',d:'Solo dinero que puedes perder. Sin comprometer vida.'},
+  {icon:'🔬',t:'Filtro crítico siempre',d:'Hecho verificado ≠ hype financiero. Autor = conflicto de interés potencial.'},
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE & STORAGE
+// ═══════════════════════════════════════════════════════
+const KEY='oscar_roadmap_v2';
+let S={
+  startDate:null,
+  checkedBooks:{},
+  metrics:Object.fromEntries(METRICS.map(m=>[m.id,m.max])),
+  weekLog:[],
+  activePhase:0,
+  activeLevel:0,
+  pyMonth:3,
+};
+
+function loadState(){try{const r=localStorage.getItem(KEY);if(r)Object.assign(S,JSON.parse(r));}catch(e){}}
+function saveState(){
+  localStorage.setItem(KEY,JSON.stringify(S));
+  const n=new Date();
+  document.getElementById('last-saved-txt').textContent=
+    'Guardado '+n.toLocaleDateString('es-CO')+' '+n.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+function totalBooks(){return LEVELS.reduce((s,l)=>s+l.books.length,0);}
+function checkedCount(){return Object.values(S.checkedBooks).filter(Boolean).length;}
+
+function computedMonth(){
+  if(!S.startDate)return null;
+  const diff=new Date()-new Date(S.startDate);
+  return Math.max(1,Math.floor(diff/(1000*60*60*24*30.44))+1);
+}
+
+function metricStatus(m,val){
+  if(val>=m.warn)return'ok';
+  if(val>=m.critical)return'warn';
+  return'critical';
+}
+
+function statusColor(s){return s==='ok'?'#2eb87a':s==='warn'?'#c9a84c':'#e05252';}
+
+function updateChips(){
+  const cm=computedMonth();
+  const fase=!cm||cm<=12?'1 — Año de Base':cm<=30?'2 — Trading Algorítmico':'3 — Trader Cuantitativo';
+  document.getElementById('chip-fase').textContent=fase;
+  document.getElementById('chip-mes').textContent=cm?'Mes '+cm:'—';
+  document.getElementById('chip-libros').textContent=checkedCount()+' / '+totalBooks();
+}
+
+// ═══════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════
+function setTab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// ROADMAP — PHASE
+// ═══════════════════════════════════════════════════════
+function setPhase(i){
+  S.activePhase=i;saveState();
+  document.querySelectorAll('.phase-btn').forEach((b,j)=>{
+    const on=j===i;
+    b.classList.toggle('active',on);
+    b.style.borderColor=on?PHASES[j].color:'var(--border)';
+    b.querySelector('.phase-num').style.color=on?PHASES[j].color:'var(--dim)';
+  });
+  renderPhaseDetail();
+}
+
+function renderPhaseDetail(){
+  const p=PHASES[S.activePhase];
+  document.getElementById('phase-detail').innerHTML=`
+    <div style="border-left:3px solid ${p.color};padding-left:14px;margin-bottom:18px">
+      <div style="font-size:9px;letter-spacing:3px;color:${p.color};text-transform:uppercase;margin-bottom:6px">${p.tagline}</div>
+      <p style="color:var(--mid);font-size:12px;line-height:1.7">${p.desc}</p>
+    </div>
+    <div class="phase-detail-grid">
+      <div>
+        <div class="card-sm" style="margin-bottom:12px">
+          <div style="font-size:9px;letter-spacing:3px;color:var(--dim);margin-bottom:8px">BROKER / CAPITAL</div>
+          <div style="color:${p.color};font-size:13px;margin-bottom:3px">${p.broker}</div>
+          <div style="color:var(--dim);font-size:11px">Capital estimado: ${p.capital}</div>
+        </div>
+        <div class="card-sm">
+          <div style="font-size:9px;letter-spacing:3px;color:var(--dim);margin-bottom:10px">SKILLS</div>
+          ${p.skills.map(s=>`<span class="skill-pill" style="color:${p.color};border-color:${p.color}44;background:${p.color}10">${s}</span>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:9px;letter-spacing:3px;color:var(--dim);margin-bottom:14px">HITOS POR MES</div>
+        ${p.milestones.map(mi=>`
+          <div class="milestone-row">
+            <div class="m-month" style="color:${p.color};border-color:${p.color}44">M${mi.m}</div>
+            <div>
+              <div style="font-size:12px;color:var(--text);line-height:1.4">${mi.t}</div>
+              <div style="font-size:9px;color:var(--dim);margin-top:2px;letter-spacing:1px">${mi.a}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// START DATE
+// ═══════════════════════════════════════════════════════
+function onStartDate(){
+  S.startDate=document.getElementById('start-date').value;
+  saveState();refreshMonth();updateChips();
+}
+
+function refreshMonth(){
+  const cm=computedMonth();
+  const el=document.getElementById('computed-month');
+  if(!cm){el.textContent='→ Configura tu fecha de inicio';return;}
+  el.textContent='→ Mes '+cm+' del roadmap';
+  const clamped=Math.min(12,Math.max(1,cm));
+  S.pyMonth=clamped;
+  const sl=document.getElementById('py-slider');
+  if(sl){sl.value=clamped;document.getElementById('py-month-lbl').textContent='MES '+clamped;}
+  renderPyGrid();
+}
+
+// ═══════════════════════════════════════════════════════
+// METRICS
+// ═══════════════════════════════════════════════════════
+function renderMetrics(){
+  document.getElementById('metrics-grid').innerHTML=METRICS.map(m=>{
+    const val=S.metrics[m.id];
+    const st=metricStatus(m,val);
+    const pct=Math.min(100,(val/m.max)*100);
+    const col=statusColor(st);
+    const displayVal=m.id==='rr'?(val*0.1).toFixed(1)+'R':val+' '+m.unit;
+    return`<div class="metric-row">
+      <div class="metric-header">
+        <div><span class="metric-area-badge" style="color:${m.ac}">${m.area}</span><span style="font-size:12px;color:var(--text)">${m.label}</span></div>
+        <div class="metric-val" style="color:${col}">${displayVal}</div>
+      </div>
+      <div class="metric-track">
+        <div class="metric-fill" style="width:${pct}%;background:${col}"></div>
+        <div class="warn-line" style="left:${(m.warn/m.max)*100}%"></div>
+      </div>
+      <input type="range" min="0" max="${m.max}" step="${m.max<=1?1:5}" value="${val}" oninput="updateMetric('${m.id}',+this.value)">
+      <div class="metric-ticks">
+        <span>0</span>
+        <span style="color:var(--gold)">mín ${m.id==='rr'?(m.warn*0.1).toFixed(1)+'R':m.warn+' '+m.unit}</span>
+        <span>${m.id==='rr'?(m.max*0.1).toFixed(1)+'R':m.max+' '+m.unit}</span>
+      </div>
+    </div>`;
+  }).join('');
+  renderAlerts();
+}
+
+function updateMetric(id,val){S.metrics[id]=val;saveState();renderMetrics();}
+
+function renderAlerts(){
+  const bad=METRICS.filter(m=>metricStatus(m,S.metrics[m.id])!=='ok');
+  const el=document.getElementById('alerts-area');
+  if(!bad.length){
+    el.innerHTML=`<div class="ok-box">✓ SEMANA EN VERDE — todos los indicadores dentro del rango esperado</div>`;
+  } else {
+    el.innerHTML=`<div class="alerts-box">
+      <div style="font-size:9px;letter-spacing:2px;color:#e05252;margin-bottom:10px">⚠ ${bad.length} ALERTA${bad.length>1?'S':''} ACTIVA${bad.length>1?'S':''}</div>
+      ${bad.map(m=>{
+        const s=metricStatus(m,S.metrics[m.id]);
+        return`<div class="alert-item">${s==='critical'?'🔴':'🟡'} <span style="color:var(--text)">${m.label}</span> — valor: <span style="color:${statusColor(s)}">${S.metrics[m.id]} ${m.unit}</span> · mínimo recomendado: ${m.warn} ${m.unit}</div>`;
+      }).join('')}
+    </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// WEEK LOG
+// ═══════════════════════════════════════════════════════
+function logWeek(){
+  const cm=computedMonth();
+  S.weekLog.unshift({date:new Date().toLocaleDateString('es-CO'),month:cm||'?',metrics:{...S.metrics},alerts:METRICS.filter(m=>metricStatus(m,S.metrics[m.id])!=='ok').length});
+  if(S.weekLog.length>52)S.weekLog.pop();
+  saveState();renderWeekLog();
+}
+
+function renderWeekLog(){
+  const el=document.getElementById('week-log-list');
+  if(!S.weekLog.length){el.innerHTML=`<div style="color:var(--dim);font-size:12px;padding:12px 0">Sin semanas registradas aún. Configura tus métricas y guarda la semana al finalizar el domingo.</div>`;return;}
+  el.innerHTML=S.weekLog.slice(0,20).map(e=>`
+    <div class="log-entry">
+      <div>
+        <div class="log-week">${e.date} · Mes ${e.month}</div>
+        <div class="log-summary">Journal: ${e.metrics.journal||0}/5 · Python: ${e.metrics.python||0}/2 · Win rate: ${e.metrics.winrate||0}% · R-avg: ${((e.metrics.rr||0)*0.1).toFixed(1)}R</div>
+      </div>
+      <span class="log-status" style="background:${e.alerts===0?'rgba(46,184,122,0.12)':'rgba(224,82,82,0.12)'};color:${e.alerts===0?'#4ade96':'#e05252'}">
+        ${e.alerts===0?'✓ VERDE':'⚠ '+e.alerts+' alerta'+(e.alerts>1?'s':'')}
+      </span>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// READING
+// ═══════════════════════════════════════════════════════
+function renderLevelTabs(){
+  document.getElementById('level-tabs').innerHTML=LEVELS.map((l,i)=>`
+    <button class="level-btn" id="lbtn-${i}" onclick="setLevel(${i})"
+      style="${i===S.activeLevel?`border-color:${l.color};color:${l.accent};background:${l.color}15`:''}" >
+      <div class="level-num" style="${i===S.activeLevel?`color:${l.accent}`:''}">${l.num}</div>
+      <div style="font-size:8px">${l.title.split(' ').slice(0,2).join(' ')}</div>
+    </button>`).join('');
+}
+
+function setLevel(i){
+  S.activeLevel=i;saveState();
+  renderLevelTabs();renderLevelContent();
+}
+
+function renderLevelContent(){
+  const lv=LEVELS[S.activeLevel];
+  document.getElementById('level-content').innerHTML=`
+    <div class="level-header" style="border-color:${lv.color}">
+      <div class="level-tag" style="color:${lv.accent}">${lv.label}</div>
+      <div class="level-title">${lv.title}</div>
+      <div class="level-sub">${lv.sub}</div>
+      <p class="level-why">${lv.why}</p>
+    </div>
+    ${lv.books.map((bk,bi)=>{
+      const key=`${lv.id}-${bi}`;const done=!!S.checkedBooks[key];
+      return`<div class="book-card${done?' done':''}" id="bc-${lv.id}-${bi}">
+        <div class="book-inner">
+          <div style="flex:1">
+            <div class="book-meta">
+              <span class="book-title">${bk.t}</span>
+              ${bk.tag?`<span class="book-tag" style="background:${lv.color}22;color:${lv.accent}">${bk.tag}</span>`:''}
+              <span class="book-phase">${bk.phase}</span>
+            </div>
+            <div class="book-author">${bk.a}</div>
+            <div class="book-note">${bk.note}</div>
+          </div>
+          <button class="check-btn${done?' done':''}" onclick="toggleBook('${lv.id}',${bi})">✓</button>
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+
+function toggleBook(lvId,bi){
+  const key=`${lvId}-${bi}`;S.checkedBooks[key]=!S.checkedBooks[key];
+  saveState();updateBooksProgress();updateChips();
+  const card=document.getElementById(`bc-${lvId}-${bi}`);
+  if(card){card.classList.toggle('done',S.checkedBooks[key]);card.querySelector('.check-btn').classList.toggle('done',S.checkedBooks[key]);}
+}
+
+function updateBooksProgress(){
+  const pct=totalBooks()?(checkedCount()/totalBooks()*100):0;
+  const bar=document.getElementById('books-bar');
+  if(bar)bar.style.width=pct.toFixed(1)+'%';
+}
+
+// ═══════════════════════════════════════════════════════
+// PYTHON
+// ═══════════════════════════════════════════════════════
+function setPyMonth(m){
+  S.pyMonth=m;saveState();
+  document.getElementById('py-month-lbl').textContent='MES '+m;
+  renderPyGrid();
+}
+
+function renderPyGrid(){
+  const m=S.pyMonth;
+  const el=document.getElementById('py-grid');
+  if(!el)return;
+  el.innerHTML=PY_MONTHS.map(pm=>{
+    const isCur=m>=pm.s&&m<=pm.e;const isPast=m>pm.e;
+    return`<div class="py-card${isCur?' cur':isPast?' past':' fut'}" style="${isCur?`border-color:${pm.color}66`:isPast?`border-color:${pm.color}33`:''}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div class="py-range" style="color:${pm.color}">${pm.range}</div>
+        ${isCur?`<span style="font-size:9px;color:${pm.color};background:${pm.color}15;padding:2px 8px;border-radius:3px;letter-spacing:1px">ACTIVO</span>`:isPast?`<span style="color:${pm.color}">✓</span>`:''}
+      </div>
+      <div class="py-title">${pm.title}</div>
+      <div class="py-libs">${pm.libs.map(l=>`<span class="lib-tag" style="color:${pm.color};border-color:${pm.color}44;background:${pm.color}10">${l}</span>`).join('')}</div>
+      <div class="py-goal"><strong style="color:var(--text)">Meta:</strong> ${pm.goal}</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// TIER LIST
+// ═══════════════════════════════════════════════════════
+function renderTierList(){
+  const el=document.getElementById('tier-list');
+  el.innerHTML=TIERS.map((t,i)=>`
+    <div class="tier-row">
+      <div class="tier-label-cell" style="background:${t.color}">
+        <div class="tier-letter">${t.tier}</div>
+        <div class="tier-tagline">${t.tagline}</div>
+      </div>
+      <div class="tier-cards">
+        ${t.items.map(it=>`<div class="tool-card">
+          <div class="tool-icon" style="background:${it.bg};color:${it.fg}">${it.l}</div>
+          <div class="tool-sub">${it.s}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="tier-note">${t.note}</div>`).join('')
+  +`<div class="tier-divider">— Bloqueado hasta Fase 2–3 —</div>
+    <div class="tier-row locked-row">
+      <div class="tier-label-cell" style="background:#3a3f52">
+        <div class="tier-letter" style="font-size:1rem;color:#555b73">2–3</div>
+        <div class="tier-tagline" style="color:#3a3f52">bloqueado</div>
+      </div>
+      <div class="tier-cards">
+        ${LOCKED_TOOLS.map(t=>`<div class="tool-card">
+          <div class="tool-icon" style="background:#1a1a2e;color:#333">
+            <div class="lock-overlay">🔒</div>${t.l}
+          </div>
+          <div class="tool-sub" style="color:#3a3f52">${t.s}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="tier-note" style="color:#1e2630">Plataformas legítimas pero prematuramente costosas en atención. Desbloqueables por métricas, no por fecha.</div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// LAWS
+// ═══════════════════════════════════════════════════════
+function renderLaws(){
+  document.getElementById('laws-list').innerHTML=LAWS.map(l=>`
+    <div class="law-card">
+      <div class="law-bg-num">${l.n}</div>
+      <div class="law-num-tag">LEY ${l.n}</div>
+      <div class="law-title">${l.title}</div>
+      <div class="law-body">${l.body}</div>
+    </div>`).join('');
+  document.getElementById('principles-grid').innerHTML=PRINCIPLES.map(p=>`
+    <div class="principle-card">
+      <div class="p-icon">${p.icon}</div>
+      <div class="p-title">${p.t}</div>
+      <div class="p-body">${p.d}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// EXPORT / IMPORT / RESET
+// ═══════════════════════════════════════════════════════
+function exportData(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download='oscar_roadmap_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();URL.revokeObjectURL(url);
+}
+
+function importData(evt){
+  const file=evt.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{try{Object.assign(S,JSON.parse(e.target.result));saveState();initAll();alert('✓ Progreso importado correctamente.');}catch(err){alert('Error al importar el archivo.');}};
+  r.readAsText(file);evt.target.value='';
+}
+
+function resetAll(){
+  if(!confirm('¿Resetear TODO el progreso? Esta acción no se puede deshacer.'))return;
+  localStorage.removeItem(KEY);
+  S={startDate:null,checkedBooks:{},metrics:Object.fromEntries(METRICS.map(m=>[m.id,m.max])),weekLog:[],activePhase:0,activeLevel:0,pyMonth:3};
+  initAll();
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+function initAll(){
+  if(S.startDate){document.getElementById('start-date').value=S.startDate;refreshMonth();}
+  setPhase(S.activePhase);
+  renderMetrics();renderWeekLog();
+  renderLevelTabs();renderLevelContent();updateBooksProgress();
+  const sl=document.getElementById('py-slider');
+  if(sl){sl.value=S.pyMonth;document.getElementById('py-month-lbl').textContent='MES '+S.pyMonth;}
+  renderPyGrid();
+  renderTierList();renderLaws();
+  updateChips();
+}
+
+loadState();
+initAll();
+setInterval(updateChips,60000);
+</script>
+</body>
+</html>
